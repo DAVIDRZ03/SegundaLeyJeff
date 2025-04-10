@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segunda Ley de Newton</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        canvas { background: white; border: 1px solid black; display: block; margin: auto; }
+        #procedimiento { white-space: pre-line; text-align: left; margin: 20px auto; width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Segunda Ley de Newton</h1>
+    <label>Masa (kg): <input type="number" id="masa" value="1"></label>
+    <label>Aceleración (m/s²): <input type="number" id="aceleracion" value="10"></label>
+    <label>Distancia (m): <input type="number" id="distancia" value="150"></label>
+    <button onclick="calcular()">Calcular</button>
+    
+    <p id="resultado">Fuerza: - N<br>Tiempo: - s<br>Velocidad Final: - m/s</p>
+    <p id="procedimiento">Cálculo:</p>
+    
+    <canvas id="animacion" width="400" height="150"></canvas>
+    
+    <script>
+        function calcular() {
+            let masa = parseFloat(document.getElementById("masa").value);
+            let aceleracion = parseFloat(document.getElementById("aceleracion").value);
+            let distancia = parseFloat(document.getElementById("distancia").value);
+            
+            if (masa <= 0) {
+                document.getElementById("resultado").innerHTML = "Error: La masa debe ser mayor que 0";
+                return;
+            }
+            
+            let fuerza = masa * aceleracion;
+            let tiempo = Math.sqrt((2 * distancia) / aceleracion);
+            let velocidadFinal = aceleracion * tiempo;
+            
+            document.getElementById("resultado").innerHTML = 
+                `Fuerza: ${fuerza.toFixed(2)} N<br>Tiempo: ${tiempo.toFixed(2)} s<br>Velocidad Final: ${velocidadFinal.toFixed(2)} m/s`;
+
+            document.getElementById("procedimiento").innerHTML = 
+                `Cálculo:\nF = m * a = ${masa} * ${aceleracion} = ${fuerza.toFixed(2)} N\n` +
+                `t = sqrt(2 * d / a) = sqrt(2 * ${distancia} / ${aceleracion}) = ${tiempo.toFixed(2)} s\n` +
+                `Vf = a * t = ${aceleracion} * ${tiempo.toFixed(2)} = ${velocidadFinal.toFixed(2)} m/s`;
+
+            animarCarro(tiempo, distancia);
+        }
+
+        function animarCarro(tiempo, distancia) {
+            let canvas = document.getElementById("animacion");
+            let ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            let x = 50;
+            let velocidad = distancia / (tiempo * 60);
+            
+            function mover() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "blue";
+                ctx.fillRect(x, 80, 50, 20);
+                
+                if (x < 350) {
+                    x += velocidad;
+                    requestAnimationFrame(mover);
+                }
+            }
+            mover();
+        }
+    </script>
+</body>
+</html>
